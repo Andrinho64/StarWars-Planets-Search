@@ -1,33 +1,43 @@
-import React, { useContext, useEffect } from 'react';
+import React, { useContext, useState } from 'react';
 import { usePlanetContext } from '../context/PlanetsContext';
 
 function Table() {
   const { planets } = usePlanetContext();
+  const [filter, setFilter] = useState('');
 
-  console.log(planets);
+  const filteredPlanets = planets.filter(
+    (planet) => planet.name.toLowerCase().includes(filter.toLowerCase()),
+  );
+
   return (
-    <table width="500">
-      <caption>Título ou legenda da tabela</caption>
-      <thead>
-        <tr>
-          <th>Name</th>
-          <th>Rotation Period</th>
-          <th>Orbital Period</th>
-          <th>Diameter</th>
-          <th>Climate</th>
-          <th>Gravity</th>
-          <th>Terrain</th>
-          <th>Surface Water</th>
-          <th>Population</th>
-          <th>Films</th>
-          <th>Created</th>
-          <th>Edited</th>
-          <th>Url</th>
-        </tr>
-      </thead>
-      <tbody>
-        {planets.map((planet, index) => {
-          return (
+    <div>
+      <input
+        type="text"
+        value={ filter }
+        onChange={ (e) => setFilter(e.target.value) }
+        data-testid="name-filter"
+      />
+      <table width="500">
+        <caption>Título ou legenda da tabela</caption>
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Rotation Period</th>
+            <th>Orbital Period</th>
+            <th>Diameter</th>
+            <th>Climate</th>
+            <th>Gravity</th>
+            <th>Terrain</th>
+            <th>Surface Water</th>
+            <th>Population</th>
+            <th>Films</th>
+            <th>Created</th>
+            <th>Edited</th>
+            <th>Url</th>
+          </tr>
+        </thead>
+        <tbody>
+          {filteredPlanets.map((planet, index) => (
             <tr key={ index }>
               <td>{planet.name}</td>
               <td>{planet.rotation_period}</td>
@@ -43,10 +53,10 @@ function Table() {
               <td>{planet.edited}</td>
               <td>{planet.url}</td>
             </tr>
-          );
-        })}
-      </tbody>
-    </table>
+          ))}
+        </tbody>
+      </table>
+    </div>
   );
 }
 
