@@ -14,42 +14,44 @@ type FilterValues = {
 
 function Table() {
   const { planets } = usePlanetContext();
-  const [filter, setFilter] = useState('');
+  const [filterName, setFilterName] = useState('');
   const [column, setColumn] = useState<Columns>('population');
   const [comparison, setComparison] = useState<Comparisons>('maior que');
   const [value, setValue] = useState(0);
-  const [disableFilter, setDisableFilter] = useState(true);
-  const [filterValues, setFilterValues] = useState<FilterValues>(
-    { column: 'population', comparison: 'maior que', value: 0 },
-  );
+  const [filterValues, setFilterValues] = useState<FilterValues[]>([]);
+
+  const [, updateState] = React.useState<any>();
+  const forceUpdate = React.useCallback(() => updateState({}), []);
 
   const filterByName = (planet: Planet): boolean => planet
-    .name.toLowerCase().includes(filter.toLowerCase());
+    .name.toLowerCase().includes(filterName.toLowerCase());
 
-  const filterByValues = (planet: Planet): boolean => {
-    if (disableFilter) {
-      return true;
-    }
-    switch (filterValues.comparison) {
-      case 'maior que':
-        return Number(planet[filterValues.column]) > filterValues.value;
-      case 'menor que':
-        return Number(planet[filterValues.column]) < filterValues.value;
-      default:
-        return Number(planet[filterValues.column]) === filterValues.value;
-    }
+  const filterByValues = (currentFilter: FilterValues) => {
+    return (planet: Planet): boolean => {
+      switch (currentFilter.comparison) {
+        case 'maior que':
+          return Number(planet[currentFilter.column]) > currentFilter.value;
+        case 'menor que':
+          return Number(planet[currentFilter.column]) < currentFilter.value;
+        default:
+          return Number(planet[currentFilter.column]) === currentFilter.value;
+      }
+    };
   };
 
-  const filteredPlanets = planets
-    .filter(filterByName)
-    .filter(filterByValues);
+  let filteredPlanets = planets.filter(filterByName);
+  if (filterValues.length > 0) {
+    filterValues.forEach((flt) => {
+      filteredPlanets = filteredPlanets.filter(filterByValues(flt));
+    });
+  }
 
   return (
     <div>
       <input
         type="text"
-        value={ filter }
-        onChange={ (e) => setFilter(e.target.value) }
+        value={ filterName }
+        onChange={ (e) => setFilterName(e.target.value) }
         data-testid="name-filter"
       />
       <select
@@ -79,8 +81,11 @@ function Table() {
       <button
         data-testid="button-filter"
         onClick={ () => {
-          setDisableFilter(false);
-          setFilterValues({ column, comparison, value });
+          const newValues = filterValues;
+          newValues.push({ column, comparison, value });
+          setFilterValues(newValues);
+          console.log(newValues);
+          forceUpdate();
         } }
       >
         Filtrar
