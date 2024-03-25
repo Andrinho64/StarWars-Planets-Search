@@ -1,16 +1,7 @@
 import React, { useContext, useState } from 'react';
 import { usePlanetContext, Planet } from '../context/PlanetsContext';
-
-type Columns = 'population'
-| 'orbital_period' | 'diameter' | 'rotation_period' | 'surface_water';
-
-type Comparisons = 'maior que' | 'menor que' | 'igual a';
-
-type FilterValues = {
-  column: Columns;
-  comparison: Comparisons;
-  value: number;
-};
+import { Columns, Comparisons, FilterValues } from '../types';
+import FilterList from './FilterList';
 
 function Table() {
   const { planets } = usePlanetContext();
@@ -84,12 +75,12 @@ function Table() {
           const newValues = filterValues;
           newValues.push({ column, comparison, value });
           setFilterValues(newValues);
-          console.log(newValues);
           forceUpdate();
         } }
       >
         Filtrar
       </button>
+      <FilterList filterValues={ filterValues } />
       <table width="500">
         <thead>
           <tr>
