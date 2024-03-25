@@ -1,6 +1,6 @@
 import React, { useContext, useState } from 'react';
 import { usePlanetContext, Planet } from '../context/PlanetsContext';
-import { Columns, Comparisons, FilterValues } from '../types';
+import Trash, { Columns, Comparisons, FilterValues } from '../types';
 import FilterList from './FilterList';
 
 function Table() {
@@ -55,6 +55,7 @@ function Table() {
         <option value="rotation_period">rotation_period</option>
         <option value="surface_water">surface_water</option>
       </select>
+      <Trash />
       <select
         data-testid="comparison-filter"
         onChange={ (e) => setComparison(e.target.value as Comparisons) }
@@ -82,6 +83,7 @@ function Table() {
       </button>
       <FilterList filterValues={ filterValues } />
       <table width="500">
+        <title>Tabela de Planetas</title>
         <thead>
           <tr>
             <th>Name</th>

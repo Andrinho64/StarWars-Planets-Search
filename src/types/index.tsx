@@ -8,3 +8,15 @@ export type FilterValues = {
   comparison: Comparisons;
   value: number;
 };
+
+export default function Trash({ enabled }: any) {
+  return (
+    <div>
+      {enabled ? (
+        ''
+      ) : (
+        '🗑️'
+      )}
+    </div>
+  );
+}
