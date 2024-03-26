@@ -16,11 +16,11 @@ export type Planet = {
   url: string;
 };
 
-type PlanetContextType = {
-  planets: Planet[];
-};
+type PlanetContextType = { planets: Planet[] };
 
-const PlanetContext = createContext<PlanetContextType | undefined>(undefined);
+export const PlanetContext = createContext<PlanetContextType>({
+  planets: [],
+});
 
 export const usePlanetContext = () => {
   const context = useContext(PlanetContext);
