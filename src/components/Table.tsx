@@ -10,6 +10,14 @@ function Table() {
   const [comparison, setComparison] = useState<Comparisons>('maior que');
   const [value, setValue] = useState(0);
   const [filterValues, setFilterValues] = useState<FilterValues[]>([]);
+  const [options, setOptions] = useState(
+    ['population', 'orbital_period', 'diameter', 'rotation_period', 'surface_water'],
+  );
+
+  const removeOptions = (opt: string) => {
+    const removeOpt = options.filter((option) => option !== opt);
+    setOptions(removeOpt);
+  };
 
   const [, updateState] = React.useState<any>();
   const forceUpdate = React.useCallback(() => updateState({}), []);
@@ -49,11 +57,14 @@ function Table() {
         data-testid="column-filter"
         onChange={ (e) => setColumn(e.target.value as Columns) }
       >
-        <option value="population" selected>population</option>
-        <option value="orbital_period">orbital_period</option>
-        <option value="diameter">diameter</option>
-        <option value="rotation_period">rotation_period</option>
-        <option value="surface_water">surface_water</option>
+        { options.map((opt, index) => {
+          if (opt === 'population') {
+            return <option key={ index } value={ opt } selected>{ opt }</option>;
+          }
+          return (
+            <option key={ index } value={ opt }>{ opt }</option>
+          );
+        })}
       </select>
       <Trash />
       <select
@@ -77,6 +88,7 @@ function Table() {
           newValues.push({ column, comparison, value });
           setFilterValues(newValues);
           forceUpdate();
+          removeOptions(column);
         } }
       >
         Filtrar
