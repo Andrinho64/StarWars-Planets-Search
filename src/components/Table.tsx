@@ -1,6 +1,6 @@
-import React, { useContext, useState } from 'react';
+import React, { useState } from 'react';
 import { usePlanetContext, Planet } from '../context/PlanetsContext';
-import Trash, { Columns, Comparisons, FilterValues } from '../types';
+import { Columns, Comparisons, FilterValues } from '../types';
 import FilterList from './FilterList';
 
 function Table() {
@@ -17,6 +17,13 @@ function Table() {
   const removeOptions = (opt: string) => {
     const removeOpt = options.filter((option) => option !== opt);
     setOptions(removeOpt);
+  };
+
+  const handleRemoveFilters = () => {
+    setFilterValues([]);
+    setOptions(
+      ['population', 'orbital_period', 'diameter', 'rotation_period', 'surface_water'],
+    );
   };
 
   const [, updateState] = React.useState<any>();
@@ -66,7 +73,6 @@ function Table() {
           );
         })}
       </select>
-      <Trash />
       <select
         data-testid="comparison-filter"
         onChange={ (e) => setComparison(e.target.value as Comparisons) }
@@ -93,7 +99,18 @@ function Table() {
       >
         Filtrar
       </button>
-      <FilterList filterValues={ filterValues } />
+      <button
+        data-testid="button-remove-filters"
+        onClick={ handleRemoveFilters }
+      >
+        Remover todas filtragens
+      </button>
+      <FilterList
+        filterValues={ { filterValues,
+          setFilterValues,
+          setOptions,
+          options } }
+      />
       <table width="500">
         <title>Tabela de Planetas</title>
         <thead>

@@ -13,6 +13,7 @@ const SELECT_COMPARISON_FILTER_SELECTOR = 'comparison-filter';
 const INPUT_VALUE_FILTER_SELECTOR = 'value-filter';
 const BTN_FILTER_SELECTOR = 'button-filter'; 
 const ROW_ROLE_SELECTOR = 'row';
+const BTN_CLEAR_ALL_SELECTOR =  'button-remove-filters';
 
 const mockFetch = () => {
   vi.spyOn(global, "fetch").mockResolvedValue({
@@ -89,13 +90,14 @@ test('Render comparison filter', () => {
   expect(screen.getByTestId(INPUT_VALUE_FILTER_SELECTOR)).toHaveProperty('nodeName', 'INPUT');
 });
 
-/* test('Filter by numeric values', async () => {
+test('Filter by numeric values', async () => {
   render(<App />);
   await waitFor(async () => {
+    fireEvent.click(screen.getByTestId(BTN_CLEAR_ALL_SELECTOR));
     fireEvent.change(screen.getByTestId(SELECT_COLUMN_FILTER_SELECTOR), { target: { value: 'surface_water' } });
     fireEvent.change(screen.getByTestId(SELECT_COMPARISON_FILTER_SELECTOR), { target: { value: 'menor que' } });
     fireEvent.change(screen.getByTestId(INPUT_VALUE_FILTER_SELECTOR), { target: { value: '2' } });
     fireEvent.click(screen.getByTestId(BTN_FILTER_SELECTOR));
     expect(screen.getAllByRole(ROW_ROLE_SELECTOR)).toHaveLength(3);
   });
-}); */
+});
