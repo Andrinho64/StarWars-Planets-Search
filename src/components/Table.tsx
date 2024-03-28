@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { usePlanetContext, Planet } from '../context/PlanetsContext';
 import { Columns, Comparisons, FilterValues } from '../types';
 import FilterList from './FilterList';
+import LineTable from './LineTable';
 
 function Table() {
   const { planets } = usePlanetContext();
@@ -18,6 +19,7 @@ function Table() {
   );
   const selectOrder = ['population',
     'orbital_period', 'diameter', 'rotation_period', 'surface_water'];
+  const [planetListOrder, setPlanetListOrder] = useState<Planet[]>([]);
 
   const removeOptions = (opt: string) => {
     const removeOpt = options.filter((option) => option !== opt);
@@ -26,6 +28,7 @@ function Table() {
 
   const handleRemoveFilters = () => {
     setFilterValues([]);
+    setPlanetListOrder([]);
     setOptions(
       ['population', 'orbital_period', 'diameter', 'rotation_period', 'surface_water'],
     );
@@ -57,10 +60,44 @@ function Table() {
     });
   }
 
-  const handleOrderPlanets = () => {
-    console.log(order);
+  const comparePlanets = (a: any, b: any) => {
+    const filterA = Number(a[order.column]);
 
-    // wip ordernar lista
+    const filterB = Number(b[order.column]);
+
+    let comparacao = 0;
+    if (order.sort === 'ASC') {
+      if (filterA > filterB) {
+        comparacao = 1;
+      } else if (filterA < filterB) {
+        comparacao = -1;
+      }
+    } else if (order.sort === 'DESC') {
+      if (filterA < filterB) {
+        comparacao = 1;
+      } else if (filterA > filterB) {
+        comparacao = -1;
+      }
+    }
+    return comparacao;
+  };
+
+  const handleOrderPlanets = () => {
+    const planetOrder = filteredPlanets.sort(comparePlanets);
+    const plantOrderUnknown = [];
+    const planetOrderNotUnknown = [];
+    for (let index = 0; index < planetOrder.length; index++) {
+      const element = planetOrder[index];
+
+      if (element[order.column] === 'unknown') {
+        plantOrderUnknown.push(element);
+      } else {
+        planetOrderNotUnknown.push(element);
+      }
+    }
+    const result = planetOrderNotUnknown.concat(plantOrderUnknown);
+
+    setPlanetListOrder(result);
   };
 
   return (
@@ -175,25 +212,7 @@ function Table() {
             <th>Url</th>
           </tr>
         </thead>
-        <tbody>
-          {filteredPlanets.map((planet, index) => (
-            <tr key={ index }>
-              <td>{planet.name}</td>
-              <td>{planet.rotation_period}</td>
-              <td>{planet.orbital_period}</td>
-              <td>{planet.diameter}</td>
-              <td>{planet.climate}</td>
-              <td>{planet.gravity}</td>
-              <td>{planet.terrain}</td>
-              <td>{planet.surface_water}</td>
-              <td>{planet.population}</td>
-              <td>{planet.films}</td>
-              <td>{planet.created}</td>
-              <td>{planet.edited}</td>
-              <td>{planet.url}</td>
-            </tr>
-          ))}
-        </tbody>
+        <LineTable props={ { filteredPlanets, planetListOrder } } />
       </table>
     </div>
   );
