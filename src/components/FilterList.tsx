@@ -9,7 +9,6 @@ type SetFilterValues = {
 };
 
 function FilterList({ filterValues }: any) {
-  console.log(filterValues.filterValues);
   return (
     <div>
       { filterValues.filterValues.map((flt: FilterValues, index: number) => {

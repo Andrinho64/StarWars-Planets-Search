@@ -13,6 +13,11 @@ function Table() {
   const [options, setOptions] = useState(
     ['population', 'orbital_period', 'diameter', 'rotation_period', 'surface_water'],
   );
+  const [order, setOrder] = useState<{ column: Columns, sort: 'ASC' | 'DESC' }>(
+    { column: 'population', sort: 'ASC' },
+  );
+  const selectOrder = ['population',
+    'orbital_period', 'diameter', 'rotation_period', 'surface_water'];
 
   const removeOptions = (opt: string) => {
     const removeOpt = options.filter((option) => option !== opt);
@@ -51,6 +56,12 @@ function Table() {
       filteredPlanets = filteredPlanets.filter(filterByValues(flt));
     });
   }
+
+  const handleOrderPlanets = () => {
+    console.log(order);
+
+    // wip ordernar lista
+  };
 
   return (
     <div>
@@ -98,6 +109,40 @@ function Table() {
         } }
       >
         Filtrar
+      </button>
+      <select
+        data-testid="column-sort"
+        onChange={ (e: any) => setOrder(
+          { ...order, column: e.target.value },
+        ) }
+      >
+        { selectOrder.map((opt, index) => {
+          return (
+            <option key={ index } value={ opt }>{ opt }</option>
+          );
+        })}
+      </select>
+      <input
+        type="radio"
+        name="base"
+        data-testid="column-sort-input-asc"
+        value="ASC"
+        onChange={ () => setOrder({ ...order, sort: 'ASC' }) }
+      />
+      Ascendente
+      <input
+        type="radio"
+        name="base"
+        data-testid="column-sort-input-desc"
+        value="DESC"
+        onChange={ () => setOrder({ ...order, sort: 'DESC' }) }
+      />
+      Descendente
+      <button
+        data-testid="column-sort-button"
+        onClick={ () => { handleOrderPlanets(); } }
+      >
+        Ordenar
       </button>
       <button
         data-testid="button-remove-filters"
